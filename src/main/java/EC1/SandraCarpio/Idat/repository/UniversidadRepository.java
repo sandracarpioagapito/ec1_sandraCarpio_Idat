@@ -2,16 +2,14 @@ package EC1.SandraCarpio.Idat.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import EC1.SandraCarpio.Idat.model.Universidad;
 
 
 
-public interface UniversidadRepository {
+public interface UniversidadRepository extends JpaRepository<Universidad, Integer>{
 	
-	void guardar (Universidad universidad);
-	void actualizarr (Universidad universidad);
-	void eliminar (Integer Id);
-	List<Universidad> listar ();
-	Universidad obtener(Integer Id);
+	
 
 }

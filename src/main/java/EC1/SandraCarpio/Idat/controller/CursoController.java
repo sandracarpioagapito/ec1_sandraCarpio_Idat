@@ -14,40 +14,66 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import EC1.SandraCarpio.Idat.model.Curso;
-import EC1.SandraCarpio.Idat.repository.CursoRepository;
+import EC1.SandraCarpio.Idat.service.CursoSservice;
+
 
 @RestController
 @RequestMapping ("/curso/v1")
 public class CursoController {
 	
 	@Autowired
-	private CursoRepository repository;
+	private CursoSservice service;
 	
-	@RequestMapping(path ="/listar", method = RequestMethod.GET)
+	@RequestMapping(path = "/listar", method = RequestMethod.GET)
 	public ResponseEntity<List<Curso>> listar(){
-		return new ResponseEntity<List<Curso>>(repository.listar(), HttpStatus.OK);
+		return new ResponseEntity<List<Curso>>(service.listar(), HttpStatus.OK) ;
 	}
 	
-	@RequestMapping(path="guardar", method = RequestMethod.POST)
-	public ResponseEntity<Void> guardar (@RequestBody Curso curso) {
-		repository.guardar(curso);
-		return new ResponseEntity <Void>(HttpStatus.CREATED);
+	@RequestMapping(path="/guardar", method = RequestMethod.POST)
+	public ResponseEntity<Void> guardar(@RequestBody Curso curso ){
+		service.guardar(curso);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 	
-	@RequestMapping(path ="/listar/{id}")
-	public ResponseEntity<Curso> obtenerPorId(@PathVariable Integer Id){
+	@RequestMapping(path = "/listar/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Curso> obtenerPorId(@PathVariable Integer id){
 		
-		Curso curso = repository.obtener(Id);
+		Curso curso = service.obtener(id);
 		
-		if(curso != null) {
+		if( curso != null) {
 			return new ResponseEntity<Curso>(curso, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<Curso>(HttpStatus.NOT_FOUND);
 		}
 		
+	}
+	
+	@RequestMapping(path = "/editar", method = RequestMethod.PUT)
+	public ResponseEntity<Void> editar(@RequestBody Curso curso){
+		
+		Curso m = service.obtener(curso.getIdCurso());
+		
+		if( m != null) {
+			service.actualizar(curso);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
 		
 	}
 	
+	@RequestMapping(path = "/eliminar/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void>eliminar(@PathVariable Integer id){
+		
+		Curso curso = service.obtener(id);
+
+		if(curso != null) {
+			service.eliminar(id);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+		}
+	}
 
 }
 
